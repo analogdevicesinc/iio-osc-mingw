@@ -1,0 +1,19 @@
+[submodule "libiio"]
+	path = libiio
+	url = https://github.com/analogdevicesinc/libiio.git
+	branch = 2014_R2
+[submodule "matio"]
+	path = matio
+	url = http://git.code.sf.net/p/matio/matio
+[submodule "dlfcn"]
+	path = dlfcn
+	url = https://github.com/dlfcn-win32/dlfcn-win32.git
+[submodule "fftw3"]
+	path = fftw3
+	url = https://github.com/FFTW/fftw3.git
+[submodule "libxml2"]
+	path = libxml2
+	url = https://github.com/GNOME/libxml2.git
+[submodule "iio-oscilloscope"]
+	path = iio-oscilloscope
+	url = https://github.com/analogdevicesinc/iio-oscilloscope.git
