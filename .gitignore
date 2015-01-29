@@ -1,0 +1,14 @@
+atk-*
+cairo-*
+gdk-pixbuf-*
+gettext-*
+glib-*
+gtk+-*[!patch]
+gtkdatabox-*[!patch]
+libffi-*
+libiconv-*
+libpng-*
+pango-*
+pixman-*
+sysroot-*
+zlib-*
