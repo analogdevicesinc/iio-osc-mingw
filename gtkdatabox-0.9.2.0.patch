@@ -1,0 +1,135 @@
+diff --git a/gtk/gtkdatabox_lines.c b/gtk/gtkdatabox_lines.c
+index 80e19cd..4398298 100644
+--- a/gtk/gtkdatabox_lines.c
++++ b/gtk/gtkdatabox_lines.c
+@@ -132,6 +132,99 @@ gtk_databox_lines_new (guint len, gfloat * X, gfloat * Y,
+    return GTK_DATABOX_GRAPH (lines);
+ }
+ 
++static guint
++gtk_databox_lines_drop_points(GdkPoint * out, const GdkPoint * in,
++		guint len, guint *consumed)
++{
++	guint i;
++	gint min, max, x = in[0].x;
++
++	min = max = in[0].y;
++
++	for (i = 1; i < len && in[i].x == x; i++) {
++		min = MIN(min, in[i].y);
++		max = MAX(max, in[i].y);
++	}
++
++	*consumed = i;
++	out[0] = in[0];
++
++	if (min == max)
++		return 1;
++
++	/* More than two points -> some can be removed */
++	if (i > 2) {
++		out[1].x = x;
++
++		if (in[0].y == min) {
++			out[1].y = max;
++
++			if (in[i - 1].y == max) {
++				return 2;
++			} else {
++				out[2] = in[i - 1];
++				return 3;
++			}
++
++		} else if (in[0].y == max) {
++			out[1].y = min;
++
++			if (in[i - 1].y == min) {
++				return 2;
++			} else {
++				out[2] = in[i - 1];
++				return 3;
++			}
++
++		} else {
++			out[2].x = x;
++
++			if (in[i - 1].y == min) {
++				out[1].y = max;
++				out[2].y = min;
++				return 3;
++			} else if (in[i - 1].y == max) {
++				out[1].y = min;
++				out[2].y = max;
++				return 3;
++			} else if (in[0].y < in[i - 1].y) {
++				out[1].y = min;
++				out[2].y = max;
++				out[3] = in[i - 1];
++				return 4;
++			} else {
++				out[1].y = max;
++				out[2].y = min;
++				out[3] = in[i - 1];
++				return 4;
++			}
++		}
++
++	} else {
++		out[1] = in[1];
++		return 2;
++	}
++}
++
++static guint
++gtk_databox_reduce_number_of_points (GdkPoint *data, guint len)
++{
++	GdkPoint *in = data, *out = data;
++	guint new_len = 0;
++
++	do {
++		guint consumed;
++		guint ret = gtk_databox_lines_drop_points(
++				out, in, len, &consumed);
++		in += consumed;
++		len -= consumed;
++		out += ret;
++		new_len += ret;
++	} while (len);
++
++	return new_len;
++}
++
+ static void
+ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
+ 			     GtkDatabox * box)
+@@ -147,6 +240,7 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
+    gfloat *Y;
+    guint len;
+    gint size = 0;
++   gint width;
+ 
+    g_return_if_fail (GTK_DATABOX_IS_LINES (lines));
+    g_return_if_fail (GTK_IS_DATABOX (box));
+@@ -166,6 +260,22 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
+ 
+    gtk_databox_values_to_pixels (box, len, X, Y, data);
+ 
++   /* Clip the points at the left of the drawing area */
++   for (i = 0; i < len && data[i].x < 0; i++);
++   if (i == len)
++	   return;
++
++   data += i;
++   len -= i;
++
++   /* Clip the points at the right of the drawing area */
++   gdk_pixmap_get_size (pixmap, &width, NULL);
++   for (i = 0; i < len && data[i].x < width; i++);
++
++   len = gtk_databox_reduce_number_of_points (data, i);
++   if (len <= 1)
++	   return;
++
+    /* More than 2^16 lines will cause X IO error on most XServers
+       (Hint from Paul Barton-Davis) */
+    for (i = 0; i < len; i += 65536)
