@@ -1,7 +1,7 @@
 atk-*
 cairo-*
 gdk-pixbuf-*
-gettext-*
+gettext-*[!patch]
 glib-*
 gtk+-*[!patch]
 gtkdatabox-*[!patch]

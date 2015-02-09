@@ -91,8 +91,13 @@ make install
 
 # Build gettext
 cd ${CURDIR}
-[ ! -d gettext-${GETTEXT_VERSION} ] && wget http://ftp.gnu.org/pub/gnu/gettext/gettext-${GETTEXT_VERSION}.tar.xz -O- |tar xJf -
-cd ${CURDIR}/gettext-${GETTEXT_VERSION}
+if [ ! -d gettext-${GETTEXT_VERSION} ] ; then
+	wget http://ftp.gnu.org/pub/gnu/gettext/gettext-${GETTEXT_VERSION}.tar.xz -O- |tar xJf -
+	cd ${CURDIR}/gettext-${GETTEXT_VERSION}
+	patch -p1 < ../gettext-${GETTEXT_VERSION}.patch
+else
+	cd ${CURDIR}/gettext-${GETTEXT_VERSION}
+fi
 ./configure ${CONFIGURE_OPTS} --enable-threads=windows --enable-relocatable \
 	--without-emacs --without-git --without-bzip2 --without-xz --disable-java \
 	--disable-native-java --disable-libasprintf --disable-openmp --disable-acl \

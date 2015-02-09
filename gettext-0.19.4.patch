@@ -1,0 +1,22 @@
+diff --git a/Makefile.am b/Makefile.am
+index b9bd2ba..e8311cd 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -19,7 +19,7 @@
+ AUTOMAKE_OPTIONS = 1.5 gnu no-dependencies
+ ACLOCAL_AMFLAGS = -I m4
+ 
+-SUBDIRS = gnulib-local gettext-runtime gettext-tools
++SUBDIRS = gnulib-local gettext-runtime
+ 
+ EXTRA_DIST = \
+   DEPENDENCIES PACKAGING HACKING ChangeLog.0 autogen.sh \
+@@ -28,7 +28,7 @@ EXTRA_DIST = \
+   m4/libtool.m4
+ 
+ # Additional dependencies for configure, due to the use of autoconf --trace.
+-$(srcdir)/configure: $(srcdir)/gettext-runtime/configure.ac $(srcdir)/gettext-tools/configure.ac 
++$(srcdir)/configure: $(srcdir)/gettext-runtime/configure.ac
+ 
+ # Verify that some files are the same.
+ distcheck-hook:
