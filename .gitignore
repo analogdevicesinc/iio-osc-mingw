@@ -5,9 +5,12 @@ gettext-*[!patch]
 glib-*
 gtk+-*[!patch]
 gtkdatabox-*[!patch]
+jpeg-*
+libcroco-*
 libffi-*
 libiconv-*
 libpng-*
+librsvg-*
 pango-*
 pixman-*
 sysroot-*

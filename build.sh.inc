@@ -7,8 +7,13 @@ GCC_VERSION=4.9-win32
 
 ZLIB_VERSION=1.2.8
 LIBPNG_VERSION=1.5.21
+LIBJPEG_VERSION=9a
 PIXMAN_VERSION=0.32.6
 CAIRO_VERSION=1.14.0
+LIBCROCO_VERSION_MAJOR=0.6
+LIBCROCO_VERSION=${LIBCROCO_VERSION_MAJOR}.8
+LIBRSVG_VERSION_MAJOR=2.40
+LIBRSVG_VERSION=${LIBRSVG_VERSION_MAJOR}.7
 LIBFFI_VERSION=3.2.1
 LIBICONV_VERSION=1.14
 GETTEXT_VERSION=0.19.4
@@ -115,6 +120,15 @@ make clean
 make ${MAKE_J}
 make install
 
+# Build libjpeg
+cd ${CURDIR}
+[ ! -d jpeg-${LIBJPEG_VERSION} ] && wget http://ijg.org/files/jpegsrc.v${LIBJPEG_VERSION}.tar.gz -O- |tar xzf -
+cd ${CURDIR}/jpeg-${LIBJPEG_VERSION}
+./configure ${CONFIGURE_OPTS}
+make clean
+make ${MAKE_J}
+make install
+
 # Build dlfcn
 cd ${CURDIR}/dlfcn
 rm -rf build && mkdir build && cd build
@@ -182,11 +196,30 @@ make install
 cd ${CURDIR}
 [ ! -d gdk-pixbuf-${GDK_PIXBUF_VERSION} ] && wget http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/${GDK_PIXBUF_VERSION_MAJOR}/gdk-pixbuf-${GDK_PIXBUF_VERSION}.tar.xz -O- |tar xJf -
 cd ${CURDIR}/gdk-pixbuf-${GDK_PIXBUF_VERSION}
-./configure ${CONFIGURE_OPTS} --without-gdiplus --with-included-loaders=png --disable-rpath \
-	--without-libtiff --without-libjpeg --enable-debug=yes --disable-modules
+./configure ${CONFIGURE_OPTS} --without-gdiplus --with-included-loaders=png,jpeg \
+	--disable-rpath --without-libtiff --enable-debug=yes --enable-modules
 make clean
 make ${MAKE_J}
 make install
+
+# Build libcroco
+cd ${CURDIR}
+[ ! -d libcroco-${LIBCROCO_VERSION} ] && wget http://ftp.gnome.org/pub/gnome/sources/libcroco/${LIBCROCO_VERSION_MAJOR}/libcroco-${LIBCROCO_VERSION}.tar.xz -O- |tar xJf -
+cd ${CURDIR}/libcroco-${LIBCROCO_VERSION}
+./autogen.sh ${CONFIGURE_OPTS} --disable-gtk-doc
+make clean
+make ${MAKE_J}
+make install
+
+# Build librsvg
+cd ${CURDIR}
+[ ! -d librsvg-${LIBRSVG_VERSION} ] && wget https://download.gnome.org/sources/librsvg/${LIBRSVG_VERSION_MAJOR}/librsvg-${LIBRSVG_VERSION}.tar.xz -O- |tar xJf -
+cd ${CURDIR}/librsvg-${LIBRSVG_VERSION}
+./configure ${CONFIGURE_OPTS} --disable-gtk-doc --disable-introspection
+make clean
+make ${MAKE_J}
+make install
+cp ${CURDIR}/loaders.cache ${SYSROOT}/${INSTALL_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
 
 # Build GTK2
 cd ${CURDIR}
@@ -259,14 +292,16 @@ shopt -s extglob
 # Remove garbage
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/bin/!(*.dll|osc.exe|iio_info.exe|iio_readdev.exe|iio_genxml.exe)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/include
-rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/!(gtk-2.0|osc)
+rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/!(gtk-2.0|osc|gdk-pixbuf-2.0)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/share/!(locale|themes|osc)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gtk-2.0/2.10.0/engines/!(*.dll)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gtk-2.0/modules/!(*.dll)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gtk-2.0/include
+rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/!(*.dll)
 
 # Strip!
 ${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/bin/*
 ${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/lib/osc/*.dll
+${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/*.dll
 
 echo "Build complete."
