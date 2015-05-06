@@ -29,6 +29,8 @@ GTK_VERSION_MAJOR=2.24
 GTK_VERSION=${GTK_VERSION_MAJOR}.25
 #GTK_VERSION=${GTK_VERSION_MAJOR}.10
 GTKDATABOX_VERSION=0.9.2.0
+CURL_VERSION=7.42.1
+JANSSON_VERSION=2.7
 
 # ------------------------------------------------------------------------------
 
@@ -280,6 +282,28 @@ make install
 [ ${MINGW_VERSION} = "x86_64" ] && cp /usr/lib/gcc/${HOST}/${GCC_VERSION}/libgcc_s_seh-1.dll ${SYSROOT}/${INSTALL_PREFIX}/bin/libgcc_s_seh-1.dll
 cp /usr/${HOST}/lib/libwinpthread-1.dll ${SYSROOT}/${INSTALL_PREFIX}/bin/libwinpthread-1.dll
 
+# Build curl
+cd ${CURDIR}
+[ ! -d curl-${CURL_VERSION} ] && wget http://curl.haxx.se/download/curl-${CURL_VERSION}.tar.bz2 -O- |tar xjf -
+cd ${CURDIR}/curl-${CURL_VERSION}
+./configure ${CONFIGURE_OPTS} --enable-http --enable-proxy \
+	--disable-ftp --disable-file --disable-ldap --disable-ldaps --disable-rtsp \
+	--disable-dict --disable-telnet --disable-tftp --disable-pop3 --disable-imap \
+	--disable-smb --disable-smtp --disable-gopher --disable-manual \
+	--with-winssl --enable-ipv6 --enable-threaded-resolver
+make clean
+make ${MAKE_J}
+make install
+
+# Build Jansson
+cd ${CURDIR}
+[ ! -d jansson-${JANSSON_VERSION} ] && wget http://www.digip.org/jansson/releases/jansson-${JANSSON_VERSION}.tar.gz -O- |tar xzf -
+cd ${CURDIR}/jansson-${JANSSON_VERSION}
+./configure ${CONFIGURE_OPTS}
+make clean
+make ${MAKE_J}
+make install
+
 # Build the osc
 cd ${CURDIR}/iio-oscilloscope
 make clean
@@ -290,7 +314,7 @@ PREFIX=/usr CROSS_COMPILE=${HOST}- DEBIAN_INSTALL=1 make SYSROOT=${SYSROOT} inst
 shopt -s extglob
 
 # Remove garbage
-rm -rf ${SYSROOT}/${INSTALL_PREFIX}/bin/!(*.dll|osc.exe|iio_info.exe|iio_readdev.exe|iio_genxml.exe)
+rm -rf ${SYSROOT}/${INSTALL_PREFIX}/bin/!(*.dll|osc.exe|iio_info.exe|iio_readdev.exe|iio_genxml.exe|curl.exe)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/include
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/!(gtk-2.0|osc|gdk-pixbuf-2.0)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/share/!(locale|themes|osc)

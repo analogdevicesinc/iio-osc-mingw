@@ -1,10 +1,12 @@
 atk-*
 cairo-*
+curl-*
 gdk-pixbuf-*
 gettext-*[!patch]
 glib-*
 gtk+-*[!patch]
 gtkdatabox-*[!patch]
+jansson-*
 jpeg-*
 libcroco-*
 libffi-*
