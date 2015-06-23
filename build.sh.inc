@@ -219,7 +219,7 @@ make install
 
 # Build librsvg
 cd ${CURDIR}
-[ ! -d librsvg-${LIBRSVG_VERSION} ] && wget https://download.gnome.org/sources/librsvg/${LIBRSVG_VERSION_MAJOR}/librsvg-${LIBRSVG_VERSION}.tar.xz -O- |tar xJf -
+[ ! -d librsvg-${LIBRSVG_VERSION} ] && wget http://ftp.heanet.ie/mirrors/ftp.gnome.org/sources/librsvg/${LIBRSVG_VERSION_MAJOR}/librsvg-${LIBRSVG_VERSION}.tar.xz -O- |tar xJf -
 cd ${CURDIR}/librsvg-${LIBRSVG_VERSION}
 ./configure ${CONFIGURE_OPTS} --disable-gtk-doc --disable-introspection
 make clean
