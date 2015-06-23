@@ -1,7 +1,7 @@
 [submodule "libiio"]
 	path = libiio
 	url = https://github.com/analogdevicesinc/libiio.git
-	branch = 2014_R2
+	branch = master
 [submodule "matio"]
 	path = matio
 	url = http://git.code.sf.net/p/matio/matio
@@ -17,3 +17,4 @@
 [submodule "iio-oscilloscope"]
 	path = iio-oscilloscope
 	url = https://github.com/analogdevicesinc/iio-oscilloscope.git
+	branch = master

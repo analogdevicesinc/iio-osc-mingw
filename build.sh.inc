@@ -69,6 +69,10 @@ rm -rf ${SYSROOT} && mkdir ${SYSROOT}
 # First update all submodules
 git submodule update --init
 
+git config -f .gitmodules submodule.libiio.branch ${BRANCH}
+git config -f .gitmodules submodule.iio-oscilloscope.branch ${BRANCH}
+git submodule update --remote libiio iio-oscilloscope
+
 # Build zlib
 cd ${CURDIR}
 [ ! -d zlib-${ZLIB_VERSION} ] && wget http://zlib.net/zlib-${ZLIB_VERSION}.tar.gz -O- |tar xzf -
