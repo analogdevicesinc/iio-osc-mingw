@@ -311,8 +311,8 @@ make install
 # Build the osc
 cd ${CURDIR}/iio-oscilloscope
 make clean
-PREFIX=.. CROSS_COMPILE=${HOST}- make SYSROOT=${SYSROOT} ${MAKE_J}
-PREFIX=/usr CROSS_COMPILE=${HOST}- DEBIAN_INSTALL=1 make SYSROOT=${SYSROOT} install
+PREFIX=.. CROSS_COMPILE=${HOST}- make SYSROOT=${SYSROOT} GIT_BRANCH=${BRANCH} ${MAKE_J}
+PREFIX=/usr CROSS_COMPILE=${HOST}- DEBIAN_INSTALL=1 make SYSROOT=${SYSROOT} GIT_BRANCH=${BRANCH} install
 
 # Required for globbing
 shopt -s extglob
