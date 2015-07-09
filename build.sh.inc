@@ -250,6 +250,13 @@ cmake_build
 make ${MAKE_J}
 make install
 
+# Build libad9361
+cd ${CURDIR}/libad9361
+rm -rf build && mkdir build && cd build
+cmake_build
+make ${MAKE_J}
+make install
+
 # Build matio
 cd ${CURDIR}/matio
 ./autogen.sh

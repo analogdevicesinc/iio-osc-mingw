@@ -18,3 +18,6 @@
 	path = iio-oscilloscope
 	url = https://github.com/analogdevicesinc/iio-oscilloscope.git
 	branch = master
+[submodule "libad9361"]
+	path = libad9361
+	url = https://github.com/analogdevicesinc/libad9361.git
