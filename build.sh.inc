@@ -28,6 +28,7 @@ GDK_PIXBUF_VERSION=${GDK_PIXBUF_VERSION_MAJOR}.2
 GTK_VERSION_MAJOR=2.24
 GTK_VERSION=${GTK_VERSION_MAJOR}.25
 #GTK_VERSION=${GTK_VERSION_MAJOR}.10
+LIBUSB_VERSION=1.0.20
 GTKDATABOX_VERSION=0.9.2.0
 CURL_VERSION=7.42.1
 JANSSON_VERSION=2.7
@@ -239,6 +240,15 @@ fi
 ./configure ${CONFIGURE_OPTS} --disable-cups --disable-papi --enable-debug \
 	--disable-rebuilds --with-gdktarget=win32 \
 	--with-included-immodules=ime --disable-modules
+make clean
+make ${MAKE_J}
+make install
+
+# Build libusb
+cd ${CURDIR}
+[ ! -d libusb-${LIBUSB_VERSION} ] && wget http://netassist.dl.sourceforge.net/project/libusb/libusb-1.0/libusb-${LIBUSB_VERSION}/libusb-${LIBUSB_VERSION}.tar.bz2 -O- |tar xjf -
+cd ${CURDIR}/libusb-${LIBUSB_VERSION}
+./configure ${CONFIGURE_OPTS}
 make clean
 make ${MAKE_J}
 make install
