@@ -76,7 +76,7 @@ git submodule update --remote libiio iio-oscilloscope
 
 # Build zlib
 cd ${CURDIR}
-[ ! -d zlib-${ZLIB_VERSION} ] && wget http://zlib.net/zlib-${ZLIB_VERSION}.tar.gz -O- |tar xzf -
+[ ! -d zlib-${ZLIB_VERSION} ] && wget http://zlib.net/fossils/zlib-${ZLIB_VERSION}.tar.gz -O- |tar xzf -
 cd ${CURDIR}/zlib-${ZLIB_VERSION}
 rm -rf build && mkdir build && cd build
 cmake_build
