@@ -16,7 +16,7 @@ LIBRSVG_VERSION_MAJOR=2.40
 LIBRSVG_VERSION=${LIBRSVG_VERSION_MAJOR}.7
 LIBFFI_VERSION=3.2.1
 LIBICONV_VERSION=1.14
-GETTEXT_VERSION=0.19.4
+GETTEXT_VERSION=0.19.8.1
 GLIB_VERSION_MAJOR=2.43
 GLIB_VERSION=${GLIB_VERSION_MAJOR}.90
 ATK_VERSION_MAJOR=2.15
@@ -106,7 +106,7 @@ cd ${CURDIR}
 if [ ! -d gettext-${GETTEXT_VERSION} ] ; then
 	wget http://ftp.gnu.org/pub/gnu/gettext/gettext-${GETTEXT_VERSION}.tar.xz -O- |tar xJf -
 	cd ${CURDIR}/gettext-${GETTEXT_VERSION}
-	patch -p1 < ../gettext-${GETTEXT_VERSION}.patch
+	patch -p1 < ../gettext-no-tools.patch
 else
 	cd ${CURDIR}/gettext-${GETTEXT_VERSION}
 fi
