@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "IIO Oscilloscope"
-#define MyAppVersion "2015_R1"
+#define MyAppVersion "2018_R1"
 #define MyAppPublisher "Analog Devices, Inc."
 #define MyAppURL "http://www.analog.com"
 #define MyAppSupportURL "https://ez.analog.com"
