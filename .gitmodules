@@ -21,3 +21,6 @@
 [submodule "libad9361"]
 	path = libad9361
 	url = https://github.com/analogdevicesinc/libad9361-iio.git
+[submodule "libserialport"]
+	path = libserialport
+	url = git://sigrok.org/libserialport

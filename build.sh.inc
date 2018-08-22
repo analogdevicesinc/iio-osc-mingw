@@ -244,6 +244,14 @@ make clean
 make ${MAKE_J}
 make install
 
+# Build libserialport
+cd ${CURDIR}/libserialport
+./autogen.sh
+./configure ${CONFIGURE_OPTS}
+make clean
+make ${MAKE_J}
+make install
+
 # Build libusb
 cd ${CURDIR}
 [ ! -d libusb-${LIBUSB_VERSION} ] && wget http://netassist.dl.sourceforge.net/project/libusb/libusb-1.0/libusb-${LIBUSB_VERSION}/libusb-${LIBUSB_VERSION}.tar.bz2 -O- |tar xjf -
