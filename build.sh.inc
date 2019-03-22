@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Options
-
 MAKE_J=-j8
 GCC_VERSION=6.3-win32
 
@@ -49,8 +48,12 @@ export PKG_CONFIG_LIBDIR="${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/usr/share/pkgc
 # Debian's mingw32 toolchain is not sysroot-aware...
 export CPPFLAGS="-I${SYSROOT}/${INSTALL_PREFIX}/include"
 export LDFLAGS="-L${SYSROOT}/${INSTALL_PREFIX}/lib"
-#export CFLAGS="-g -ggdb"
+#export CFLAGS="-g -ggdb -std=gnu89"
 export DESTDIR=${SYSROOT}/
+# Required for globbing
+shopt -s extglob
+
+
 
 cmake_build() {
 	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_COLOR_MAKEFILE=OFF \
@@ -62,19 +65,26 @@ cmake_build() {
 		..
 }
 
+delete_prev_build_artifact () {
 cd ${CURDIR}
 
 # Create the output folder
 rm -rf ${SYSROOT} && mkdir ${SYSROOT}
+}
 
 # First update all submodules
+git_submodule_update () {
+cd ${CURDIR}
 git submodule update --init
 
 git config -f .gitmodules submodule.libiio.branch ${BRANCH}
 git config -f .gitmodules submodule.iio-oscilloscope.branch ${BRANCH}
 git submodule update --remote libiio iio-oscilloscope
 
+}
+
 # Build zlib
+build_zlib () {
 cd ${CURDIR}
 [ ! -d zlib-${ZLIB_VERSION} ] && wget http://zlib.net/fossils/zlib-${ZLIB_VERSION}.tar.gz -O- |tar xzf -
 cd ${CURDIR}/zlib-${ZLIB_VERSION}
@@ -83,8 +93,10 @@ cmake_build
 make ${MAKE_J}
 make install
 ln -s ${SYSROOT}/${INSTALL_PREFIX}/lib/libzlib.dll.a ${SYSROOT}/${INSTALL_PREFIX}/lib/libz.dll.a
+}
 
 # Build libiconv
+build_libiconv () {
 cd ${CURDIR}
 [ ! -d libiconv-${LIBICONV_VERSION} ] && wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${LIBICONV_VERSION}.tar.gz -O- |tar xzf -
 cd ${CURDIR}/libiconv-${LIBICONV_VERSION}
@@ -92,16 +104,20 @@ cd ${CURDIR}/libiconv-${LIBICONV_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build libxml
+build_libxml () {
 cd ${CURDIR}/libxml2
 LIBS="-lz" \
 	./autogen.sh ${CONFIGURE_OPTS} --without-python
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build gettext
+build_gettext () {
 cd ${CURDIR}
 if [ ! -d gettext-${GETTEXT_VERSION} ] ; then
 	wget http://ftp.gnu.org/pub/gnu/gettext/gettext-${GETTEXT_VERSION}.tar.xz -O- |tar xJf -
@@ -117,8 +133,10 @@ fi
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build libpng
+build_libpng () {
 cd ${CURDIR}
 [ ! -d libpng-${LIBPNG_VERSION} ] && wget ftp://ftp.simplesystems.org/pub/png/src/history/libpng15/libpng-${LIBPNG_VERSION}.tar.xz -O- |tar xJf -
 cd ${CURDIR}/libpng-${LIBPNG_VERSION}
@@ -126,8 +144,10 @@ cd ${CURDIR}/libpng-${LIBPNG_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build libjpeg
+build_libjpeg () {
 cd ${CURDIR}
 [ ! -d jpeg-${LIBJPEG_VERSION} ] && wget http://ijg.org/files/jpegsrc.v${LIBJPEG_VERSION}.tar.gz -O- |tar xzf -
 cd ${CURDIR}/jpeg-${LIBJPEG_VERSION}
@@ -135,15 +155,19 @@ cd ${CURDIR}/jpeg-${LIBJPEG_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build dlfcn
+build_dlfcn () {
 cd ${CURDIR}/dlfcn
 rm -rf build && mkdir build && cd build
 cmake_build
 make ${MAKE_J}
 make install
+}
 
 # Build libffi
+build_libffi () {
 cd ${CURDIR}
 [ ! -d libffi-${LIBFFI_VERSION} ] && wget ftp://sourceware.org/pub/libffi/libffi-${LIBFFI_VERSION}.tar.gz -O- |tar xzf -
 cd ${CURDIR}/libffi-${LIBFFI_VERSION}
@@ -151,8 +175,10 @@ cd ${CURDIR}/libffi-${LIBFFI_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build glib
+build_glib () {
 cd ${CURDIR}
 [ ! -d glib-${GLIB_VERSION} ] && wget http://ftp.gnome.org/pub/gnome/sources/glib/${GLIB_VERSION_MAJOR}/glib-${GLIB_VERSION}.tar.xz -O- |tar xJf -
 cd ${CURDIR}/glib-${GLIB_VERSION}
@@ -160,8 +186,10 @@ cd ${CURDIR}/glib-${GLIB_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build pixman
+build_pixman () {
 cd ${CURDIR}
 [ ! -d pixman-${PIXMAN_VERSION} ] && wget http://cairographics.org/releases/pixman-${PIXMAN_VERSION}.tar.gz -O- |tar xzf -
 cd ${CURDIR}/pixman-${PIXMAN_VERSION}
@@ -169,8 +197,10 @@ cd ${CURDIR}/pixman-${PIXMAN_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build Cairo
+build_cairo () {
 cd ${CURDIR}
 [ ! -d cairo-${CAIRO_VERSION} ] && wget http://cairographics.org/releases/cairo-${CAIRO_VERSION}.tar.xz -O- |tar xJf -
 cd ${CURDIR}/cairo-${CAIRO_VERSION}
@@ -179,8 +209,10 @@ ax_cv_c_float_words_bigendian=no png_LIBS="-lpng15 -lz" \
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build ATK
+build_atk () {
 cd ${CURDIR}
 [ ! -d atk-${ATK_VERSION} ] && wget http://ftp.gnome.org/pub/gnome/sources/atk/${ATK_VERSION_MAJOR}/atk-${ATK_VERSION}.tar.xz -O- |tar xJf -
 cd ${CURDIR}/atk-${ATK_VERSION}
@@ -188,8 +220,10 @@ cd ${CURDIR}/atk-${ATK_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build Pango
+build_pango () {
 cd ${CURDIR}
 [ ! -d pango-${PANGO_VERSION} ] && wget http://ftp.gnome.org/pub/gnome/sources/pango/${PANGO_VERSION_MAJOR}/pango-${PANGO_VERSION}.tar.xz -O- |tar xJf -
 cd ${CURDIR}/pango-${PANGO_VERSION}
@@ -198,8 +232,10 @@ cd ${CURDIR}/pango-${PANGO_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build gdk-pixbuf
+build_gdk-pixbuf () {
 cd ${CURDIR}
 [ ! -d gdk-pixbuf-${GDK_PIXBUF_VERSION} ] && wget http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/${GDK_PIXBUF_VERSION_MAJOR}/gdk-pixbuf-${GDK_PIXBUF_VERSION}.tar.xz -O- |tar xJf -
 cd ${CURDIR}/gdk-pixbuf-${GDK_PIXBUF_VERSION}
@@ -208,8 +244,11 @@ cd ${CURDIR}/gdk-pixbuf-${GDK_PIXBUF_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
+
 
 # Build libcroco
+build_libcroco () {
 cd ${CURDIR}
 [ ! -d libcroco-${LIBCROCO_VERSION} ] && wget http://ftp.gnome.org/pub/gnome/sources/libcroco/${LIBCROCO_VERSION_MAJOR}/libcroco-${LIBCROCO_VERSION}.tar.xz -O- |tar xJf -
 cd ${CURDIR}/libcroco-${LIBCROCO_VERSION}
@@ -217,8 +256,10 @@ cd ${CURDIR}/libcroco-${LIBCROCO_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build librsvg
+build_librsvg () {
 cd ${CURDIR}
 [ ! -d librsvg-${LIBRSVG_VERSION} ] && wget http://ftp.gnome.org/pub/GNOME/sources/librsvg/${LIBRSVG_VERSION_MAJOR}/librsvg-${LIBRSVG_VERSION}.tar.xz -O- |tar xJf -
 cd ${CURDIR}/librsvg-${LIBRSVG_VERSION}
@@ -227,8 +268,10 @@ make clean
 make ${MAKE_J}
 make install
 cp ${CURDIR}/loaders.cache ${SYSROOT}/${INSTALL_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
+}
 
 # Build GTK2
+build_gtk2 () {
 cd ${CURDIR}
 if [ ! -d gtk+-${GTK_VERSION} ] ; then
 	wget http://ftp.gnome.org/pub/gnome/sources/gtk+/${GTK_VERSION_MAJOR}/gtk+-${GTK_VERSION}.tar.xz -O- |tar xJf -
@@ -243,16 +286,20 @@ fi
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build libserialport
+build_libserialport () {
 cd ${CURDIR}/libserialport
 ./autogen.sh
 ./configure ${CONFIGURE_OPTS}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build libusb
+build_libusb () {
 cd ${CURDIR}
 [ ! -d libusb-${LIBUSB_VERSION} ] && wget https://datapacket.dl.sourceforge.net/project/libusb/libusb-1.0/libusb-${LIBUSB_VERSION}/libusb-${LIBUSB_VERSION}.tar.bz2 -O- |tar xjf -
 cd ${CURDIR}/libusb-${LIBUSB_VERSION}
@@ -260,30 +307,41 @@ cd ${CURDIR}/libusb-${LIBUSB_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build libiio
+build_libiio () {
 cd ${CURDIR}/libiio
-rm -rf build && mkdir build && cd build
+rm -rf build 
+#git checkout a826645b07f98949c440765af8fda49dd8609693
+mkdir build && cd build
 cmake_build
 make ${MAKE_J}
 make install
+}
 
 # Build libad9361
+build_libad9361 () {
 cd ${CURDIR}/libad9361
 rm -rf build && mkdir build && cd build
+#git checkout e037d45
 cmake_build
 make ${MAKE_J}
 make install
+}
 
 # Build matio
+build_matio () {
 cd ${CURDIR}/matio
 ./autogen.sh
 ./configure ${CONFIGURE_OPTS}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build fftw3
+build_fftw3 () {
 cd ${CURDIR}/fftw3
 ./bootstrap.sh ${CONFIGURE_OPTS} --without-python \
 	--enable-threads --with-combined-threads --enable-portable-binary \
@@ -291,8 +349,10 @@ cd ${CURDIR}/fftw3
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build gtkdatabox
+build_gtkdatabox () {
 cd ${CURDIR}
 if [ ! -d gtkdatabox-${GTKDATABOX_VERSION} ] ; then
 	wget http://sourceforge.net/projects/gtkdatabox/files/gtkdatabox/${GTKDATABOX_VERSION}/gtkdatabox-${GTKDATABOX_VERSION}.tar.gz -O- |tar xzf -
@@ -305,13 +365,17 @@ fi
 make clean
 make ${MAKE_J}
 make install
+}
 
+copy_remaining_dlls () {
 # Copy remaining DLLs
 [ ${MINGW_VERSION} = "i686" ] && cp /usr/lib/gcc/${HOST}/${GCC_VERSION}/libgcc_s_sjlj-1.dll ${SYSROOT}/${INSTALL_PREFIX}/bin/libgcc_s_sjlj-1.dll
 [ ${MINGW_VERSION} = "x86_64" ] && cp /usr/lib/gcc/${HOST}/${GCC_VERSION}/libgcc_s_seh-1.dll ${SYSROOT}/${INSTALL_PREFIX}/bin/libgcc_s_seh-1.dll
 cp /usr/${HOST}/lib/libwinpthread-1.dll ${SYSROOT}/${INSTALL_PREFIX}/bin/libwinpthread-1.dll
+}
 
 # Build curl
+build_curl () {
 cd ${CURDIR}
 [ ! -d curl-${CURL_VERSION} ] && wget http://curl.haxx.se/download/curl-${CURL_VERSION}.tar.bz2 -O- |tar xjf -
 cd ${CURDIR}/curl-${CURL_VERSION}
@@ -323,8 +387,10 @@ cd ${CURDIR}/curl-${CURL_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build Jansson
+build_jansson () {
 cd ${CURDIR}
 [ ! -d jansson-${JANSSON_VERSION} ] && wget http://www.digip.org/jansson/releases/jansson-${JANSSON_VERSION}.tar.gz -O- |tar xzf -
 cd ${CURDIR}/jansson-${JANSSON_VERSION}
@@ -332,16 +398,18 @@ cd ${CURDIR}/jansson-${JANSSON_VERSION}
 make clean
 make ${MAKE_J}
 make install
+}
 
 # Build the osc
+build_osc () {
 cd ${CURDIR}/iio-oscilloscope
 make clean
+#git checkout c61e270
 PREFIX=.. CROSS_COMPILE=${HOST}- make SYSROOT=${SYSROOT} GIT_BRANCH=${BRANCH} ${MAKE_J}
 PREFIX=/usr CROSS_COMPILE=${HOST}- DEBIAN_INSTALL=1 make SYSROOT=${SYSROOT} GIT_BRANCH=${BRANCH} install
+}
 
-# Required for globbing
-shopt -s extglob
-
+remove_garbage () {
 # Remove garbage
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/bin/!(*.dll|osc.exe|iio_info.exe|iio_readdev.exe|iio_genxml.exe|curl.exe)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/include
@@ -351,10 +419,52 @@ rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gtk-2.0/2.10.0/engines/!(*.dll)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gtk-2.0/modules/!(*.dll)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gtk-2.0/include
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/!(*.dll)
+}
 
 # Strip!
+strip () {
 ${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/bin/*
 ${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/lib/osc/*.dll
 ${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/*.dll
+}
+
+main () {
+delete_prev_build_artifact
+git_submodule_update
+cd ${CURDIR}
+build_zlib
+build_libiconv
+build_libxml
+build_gettext
+build_libpng
+build_libjpeg
+build_dlfcn
+build_libffi
+build_glib
+build_pixman
+build_cairo
+build_atk
+build_pango
+build_gdk-pixbuf
+build_libcroco
+build_librsvg
+build_gtk2
+build_libserialport
+build_libusb
+build_libiio
+build_libad9361
+build_matio
+build_fftw3
+build_gtkdatabox
+copy_remaining_dlls
+build_curl
+build_jansson
+build_osc
+remove_garbage
+strip
 
 echo "Build complete."
+}
+
+main
+
