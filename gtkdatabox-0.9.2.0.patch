@@ -1,8 +1,8 @@
 diff --git a/gtk/gtkdatabox_lines.c b/gtk/gtkdatabox_lines.c
-index 80e19cd..4398298 100644
+index 80e19cd..4fe05d9 100644
 --- a/gtk/gtkdatabox_lines.c
 +++ b/gtk/gtkdatabox_lines.c
-@@ -132,6 +132,99 @@ gtk_databox_lines_new (guint len, gfloat * X, gfloat * Y,
+@@ -132,6 +132,102 @@ gtk_databox_lines_new (guint len, gfloat * X, gfloat * Y,
     return GTK_DATABOX_GRAPH (lines);
  }
  
@@ -91,7 +91,10 @@ index 80e19cd..4398298 100644
 +		guint ret = gtk_databox_lines_drop_points(
 +				out, in, len, &consumed);
 +		in += consumed;
-+		len -= consumed;
++		if (len > consumed)
++			len -= consumed;
++		else
++			len = 0;
 +		out += ret;
 +		new_len += ret;
 +	} while (len);
@@ -102,7 +105,7 @@ index 80e19cd..4398298 100644
  static void
  gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
  			     GtkDatabox * box)
-@@ -147,6 +240,7 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
+@@ -147,6 +243,7 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
     gfloat *Y;
     guint len;
     gint size = 0;
@@ -110,7 +113,7 @@ index 80e19cd..4398298 100644
  
     g_return_if_fail (GTK_DATABOX_IS_LINES (lines));
     g_return_if_fail (GTK_IS_DATABOX (box));
-@@ -166,6 +260,22 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
+@@ -166,6 +263,22 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
  
     gtk_databox_values_to_pixels (box, len, X, Y, data);
  
