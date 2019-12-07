@@ -301,7 +301,7 @@ make install
 # Build libusb
 build_libusb () {
 cd ${CURDIR}
-[ ! -d libusb-${LIBUSB_VERSION} ] && wget https://datapacket.dl.sourceforge.net/project/libusb/libusb-1.0/libusb-${LIBUSB_VERSION}/libusb-${LIBUSB_VERSION}.tar.bz2 -O- |tar xjf -
+[ ! -d libusb-${LIBUSB_VERSION} ] && wget https://sourceforge.net/projects/libusb/files/libusb-1.0/libusb-${LIBUSB_VERSION}/libusb-${LIBUSB_VERSION}.tar.bz2 -O- |tar xjf -
 cd ${CURDIR}/libusb-${LIBUSB_VERSION}
 ./configure ${CONFIGURE_OPTS}
 make clean
