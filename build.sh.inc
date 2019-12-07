@@ -123,6 +123,7 @@ if [ ! -d gettext-${GETTEXT_VERSION} ] ; then
 	wget http://ftp.gnu.org/pub/gnu/gettext/gettext-${GETTEXT_VERSION}.tar.xz -O- |tar xJf -
 	cd ${CURDIR}/gettext-${GETTEXT_VERSION}
 	patch -p1 < ../gettext-no-tools.patch
+	autoreconf
 else
 	cd ${CURDIR}/gettext-${GETTEXT_VERSION}
 fi
