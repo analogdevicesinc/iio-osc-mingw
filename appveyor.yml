@@ -19,3 +19,6 @@ init:
 build_script:
   - ./build.sh ${MINGW_VERSION}
 
+after_build:
+  - tar -caf iio-osc-${MINGW_VERSION}-build-deps.tar.xz sysroot-${MINGW_VERSION}
+  - appveyor PushArtifact /home/appveyor/projects/iio-osc-mingw/iio-osc-${MINGW_VERSION}-build-deps.tar.xz
