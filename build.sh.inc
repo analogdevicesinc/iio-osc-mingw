@@ -75,12 +75,8 @@ rm -rf ${SYSROOT} && mkdir ${SYSROOT}
 # First update all submodules
 git_submodule_update () {
 cd ${CURDIR}
-git submodule update --init
-
-git config -f .gitmodules submodule.libiio.branch ${BRANCH}
-git config -f .gitmodules submodule.iio-oscilloscope.branch ${BRANCH}
-git submodule update --remote libiio iio-oscilloscope
-
+git submodule init
+git submodule update --no-fetch --jobs 8
 }
 
 # Build zlib
