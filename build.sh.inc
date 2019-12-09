@@ -314,6 +314,7 @@ rm -rf build
 #git checkout a826645b07f98949c440765af8fda49dd8609693
 mkdir build && cd build
 cmake_build
+cmake -DWITH_TESTS:BOOL=OFF -DWITH_DOC:BOOL=OFF -DWITH_MATLAB_BINDINGS:BOOL=OFF -DCSHARP_BINDINGS:BOOL=OFF -DPYTHON_BINDINGS:BOOL=OFF ..
 make ${MAKE_J}
 make install
 }
