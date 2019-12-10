@@ -396,20 +396,12 @@ make ${MAKE_J}
 make install
 }
 
-# Build the osc
-build_osc () {
-cd ${CURDIR}/iio-oscilloscope
-make clean
-PREFIX=.. CROSS_COMPILE=${HOST}- make SYSROOT=${SYSROOT} GIT_BRANCH=${BRANCH} ${MAKE_J}
-PREFIX=/usr CROSS_COMPILE=${HOST}- DEBIAN_INSTALL=1 make SYSROOT=${SYSROOT} GIT_BRANCH=${BRANCH} install
-}
-
 remove_garbage () {
 # Remove garbage
-rm -rf ${SYSROOT}/${INSTALL_PREFIX}/bin/!(*.dll|osc.exe|iio_info.exe|iio_readdev.exe|iio_genxml.exe|curl.exe)
+rm -rf ${SYSROOT}/${INSTALL_PREFIX}/bin/!(*.dll|iio_info.exe|iio_readdev.exe|iio_genxml.exe|curl.exe)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/include
-rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/!(gtk-2.0|osc|gdk-pixbuf-2.0)
-rm -rf ${SYSROOT}/${INSTALL_PREFIX}/share/!(locale|themes|osc)
+rm -rf ${SYSROOT}/${INSTALL_PREFIX}/share/!(locale|themes)
+rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/!(gtk-2.0|gdk-pixbuf-2.0)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gtk-2.0/2.10.0/engines/!(*.dll)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gtk-2.0/modules/!(*.dll)
 rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gtk-2.0/include
@@ -419,7 +411,6 @@ rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/!(*.dll)
 # Strip!
 strip () {
 ${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/bin/*
-${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/lib/osc/*.dll
 ${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/*.dll
 }
 
@@ -454,7 +445,6 @@ build_gtkdatabox
 copy_remaining_dlls
 build_curl
 build_jansson
-build_osc
 remove_garbage
 strip
 
