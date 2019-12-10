@@ -87,7 +87,9 @@ rm -rf build && mkdir build && cd build
 cmake_build
 make ${MAKE_J}
 make install
-ln -s ${SYSROOT}/${INSTALL_PREFIX}/lib/libzlib.dll.a ${SYSROOT}/${INSTALL_PREFIX}/lib/libz.dll.a
+pushd ${SYSROOT}/${INSTALL_PREFIX}/lib
+ln -s libzlib.dll.a ${SYSROOT}/${INSTALL_PREFIX}/lib/libz.dll.a
+popd
 }
 
 # Build libiconv
