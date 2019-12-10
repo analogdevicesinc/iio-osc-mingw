@@ -26,7 +26,6 @@ GDK_PIXBUF_VERSION_MAJOR=2.28
 GDK_PIXBUF_VERSION=${GDK_PIXBUF_VERSION_MAJOR}.2
 GTK_VERSION_MAJOR=2.24
 GTK_VERSION=${GTK_VERSION_MAJOR}.25
-#GTK_VERSION=${GTK_VERSION_MAJOR}.10
 LIBUSB_VERSION=1.0.21
 GTKDATABOX_VERSION=0.9.2.0
 CURL_VERSION=7.42.1
@@ -311,7 +310,6 @@ make install
 build_libiio () {
 cd ${CURDIR}/libiio
 rm -rf build 
-#git checkout a826645b07f98949c440765af8fda49dd8609693
 mkdir build && cd build
 cmake_build
 cmake -DWITH_TESTS:BOOL=OFF -DWITH_DOC:BOOL=OFF -DWITH_MATLAB_BINDINGS:BOOL=OFF -DCSHARP_BINDINGS:BOOL=OFF -DPYTHON_BINDINGS:BOOL=OFF ..
@@ -323,7 +321,6 @@ make install
 build_libad9361 () {
 cd ${CURDIR}/libad9361
 rm -rf build && mkdir build && cd build
-#git checkout e037d45
 cmake_build
 make ${MAKE_J}
 make install
@@ -403,7 +400,6 @@ make install
 build_osc () {
 cd ${CURDIR}/iio-oscilloscope
 make clean
-#git checkout c61e270
 PREFIX=.. CROSS_COMPILE=${HOST}- make SYSROOT=${SYSROOT} GIT_BRANCH=${BRANCH} ${MAKE_J}
 PREFIX=/usr CROSS_COMPILE=${HOST}- DEBIAN_INSTALL=1 make SYSROOT=${SYSROOT} GIT_BRANCH=${BRANCH} install
 }
