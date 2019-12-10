@@ -410,7 +410,8 @@ rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/!(*.dll)
 
 # Strip!
 strip () {
-${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/bin/*
+${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/bin/*.dll
+${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/bin/*.exe
 ${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/*.dll
 }
 
@@ -445,7 +446,7 @@ build_gtkdatabox
 copy_remaining_dlls
 build_curl
 build_jansson
-remove_garbage
+#remove_garbage
 strip
 
 echo "Build complete."
