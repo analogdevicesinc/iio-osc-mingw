@@ -14,6 +14,3 @@ export MINGW_VERSION=$1
 cd ${CURDIR}
 . ./build.sh.inc
 
-# Assuming Wine is installed and Inno setup compiler is installed in the wine env.
-#wine ~/.wine/drive_c/Program\ Files/Inno\ Setup\ 5/ISCC.exe ${CURDIR}/osc.iss
-
