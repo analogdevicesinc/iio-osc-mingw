@@ -13,6 +13,7 @@ libffi-*
 libiconv-*
 libpng-*
 librsvg-*
+libusb-*
 pango-*
 pixman-*
 sysroot-*
