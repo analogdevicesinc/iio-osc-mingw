@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [[ -z "$1" ]]; then
-  echo "Provide the MinGW version (i686 or x86_64)"
-  exit
+	echo "Provide the MinGW version (i686 or x86_64)"
+	exit
 fi
 
 CURDIR=`realpath "$0"`
