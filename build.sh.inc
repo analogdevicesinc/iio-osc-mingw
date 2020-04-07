@@ -240,7 +240,8 @@ build_gdk-pixbuf () {
 	cd ${CURDIR}
 	[ ! -d gdk-pixbuf-${GDK_PIXBUF_VERSION} ] && wget http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/${GDK_PIXBUF_VERSION_MAJOR}/gdk-pixbuf-${GDK_PIXBUF_VERSION}.tar.xz -O- |tar xJf -
 	cd ${CURDIR}/gdk-pixbuf-${GDK_PIXBUF_VERSION}
-	sudo ln -sf /usr/lib/*/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders /usr/local/bin/gdk-pixbuf-query-loaders
+	[ ${MINGW_VERSION} = "i686" ] && sudo ln -sf /usr/lib/i386-linux-gnu/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders /usr/local/bin/gdk-pixbuf-query-loaders
+	[ ${MINGW_VERSION} = "x86_64" ] && sudo ln -sf /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders /usr/local/bin/gdk-pixbuf-query-loaders
 	./configure ${CONFIGURE_OPTS} --without-gdiplus --with-included-loaders=png,jpeg \
 		--disable-rpath --without-libtiff --enable-debug=yes --enable-modules
 	make clean
