@@ -414,6 +414,11 @@ remove_garbage () {
 	rm -rf ${SYSROOT}/${INSTALL_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/!(*.dll)
 }
 
+handle_resources () {
+	mkdir -p ${SYSROOT}/${INSTALL_PREFIX}/share/icons
+	cp /usr/share/icons/Humanity/actions/24/window-new.svg ${SYSROOT}/${INSTALL_PREFIX}/share/icons/
+}
+
 # Strip!
 	strip () {
 	${HOST}-strip ${SYSROOT}/${INSTALL_PREFIX}/bin/*.dll
@@ -453,6 +458,7 @@ main () {
 	build_curl
 	build_jansson
 	#remove_garbage
+	handle_resources
 	strip
 
 	echo "Build complete."
