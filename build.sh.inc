@@ -321,7 +321,7 @@ build_libiio () {
 	rm -rf build 
 	mkdir build && cd build
 	cmake_build
-	cmake -DWITH_TESTS:BOOL=ON -DWITH_DOC:BOOL=OFF -DCSHARP_BINDINGS:BOOL=OFF -DPYTHON_BINDINGS:BOOL=OFF ..
+	cmake -DWITH_TESTS:BOOL=ON -DWITH_DOC:BOOL=OFF -DCSHARP_BINDINGS:BOOL=OFF -DPYTHON_BINDINGS:BOOL=OFF -DENABLE_IPV6:BOOL=OFF ..
 	make ${MAKE_J}
 	make install
 }
