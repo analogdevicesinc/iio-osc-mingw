@@ -336,6 +336,15 @@ build_libad9361 () {
 	make install
 }
 
+# Build libad9166
+build_libad9166 () {
+	cd ${CURDIR}/libad9166
+	rm -rf build && mkdir build && cd build
+	cmake_build
+	make ${MAKE_J}
+	make install
+}
+
 # Build matio
 build_matio () {
 	cd ${CURDIR}/matio
