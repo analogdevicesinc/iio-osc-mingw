@@ -141,7 +141,7 @@ build_gettext () {
 # Build libpng
 build_libpng () {
 	cd ${CURDIR}
-	[ ! -d libpng-${LIBPNG_VERSION} ] && wget ftp://ftp.simplesystems.org/pub/png/src/history/libpng15/libpng-${LIBPNG_VERSION}.tar.xz -O- |tar xJf -
+	[ ! -d libpng-${LIBPNG_VERSION} ] && wget https://sourceforge.net/projects/libpng/files/libpng15/older-releases/${LIBPNG_VERSION}/libpng-${LIBPNG_VERSION}.tar.xz -O- |tar xJf -
 	cd ${CURDIR}/libpng-${LIBPNG_VERSION}
 	./configure ${CONFIGURE_OPTS}
 	make clean
