@@ -464,6 +464,7 @@ main () {
 	build_libusb
 	build_libiio
 	build_libad9361
+	build_libad9166
 	build_matio
 	build_fftw3
 	build_gtkdatabox
