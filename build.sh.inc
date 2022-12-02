@@ -318,8 +318,8 @@ build_libusb () {
 build_libiio () {
 	cd ${CURDIR}/libiio
 	# TO DO: Remove the 2 replacements once things get updated to libiio (on next libiio release)
-	sed -i "s/Winsock2.h/winsock2.h/" mdns.h
-	sed -i "s/Ws2tcpip/ws2tcpip/" mdns.h
+	sed -i "s/Winsock2.h/winsock2.h/" deps/mdns/mdns.h
+	sed -i "s/Ws2tcpip/ws2tcpip/" deps/mdns/mdns.h
 	rm -rf build 
 	mkdir build && cd build
 	cmake_build "-DWITH_TESTS:BOOL=ON -DWITH_DOC:BOOL=OFF -DCSHARP_BINDINGS:BOOL=OFF -DPYTHON_BINDINGS:BOOL=OFF -DENABLE_IPV6:BOOL=OFF -DWITH_SERIAL_BACKEND:BOOL=ON"
