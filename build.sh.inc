@@ -332,6 +332,7 @@ build_libiio () {
 # Build libad9361
 build_libad9361 () {
 	cd ${CURDIR}/libad9361
+	sed -i "s/find_package(Doxygen)//" CMakeLists.txt
 	rm -rf build && mkdir build && cd build
 	cmake_build
 	make ${MAKE_J}
@@ -341,6 +342,7 @@ build_libad9361 () {
 # Build libad9166
 build_libad9166 () {
 	cd ${CURDIR}/libad9166
+	sed -i "s/find_package(Doxygen)//" CMakeLists.txt
 	rm -rf build && mkdir build && cd build
 	cmake_build
 	make ${MAKE_J}
